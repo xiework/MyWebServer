@@ -1,9 +1,10 @@
 # MyWebServer
-Linux下C++轻量级Web服务器  
-使用到达技术 线程池 socket epoll 连接池  
-使用状态机解析HTTP请求报文，支持解析GET和POST请求  
-实现同步/异步日志系统，记录服务器运行状态  
-访问服务器数据库实现web端用户注册、登录功能，可以请求服务器图片和视频文件
+利用I/O复用技术epoll与线程池实现多线程的Reactor高并发模型  
+利用正则表达式与状态机解析HTTP请求报文，实现处理静态资源的请求，并发送响应报文  
+利用标准库容器封装char，实现自动增长的缓冲区  
+基于小根堆实现的定时器，关闭超时的非活动连接  
+利用单例模式与阻塞队列实现异步的日志系统，记录服务器运行状态  
+利用RAII机制实现了数据库连接池，减少数据库连接建立与关闭的开销，同时实现了用户注册登录功能  
 # 说明
 此项目为网上开源项目，作者为 [@qinguoyi](https://github.com/qinguoyi)  
 源项目地址 [https://github.com/qinguoyi/TinyWebServer](https://github.com/qinguoyi/TinyWebServer)
