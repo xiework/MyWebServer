@@ -1,38 +1,38 @@
 #include "config.h"
 
 Config::Config() {
-    //�˿ں�,Ĭ��9006
+    //端口号
     PORT = 9006;
 
-    //��־д�뷽ʽ��Ĭ��ͬ��
+    //日志写入方式，默认同步
     LOGWrite = 0;
 
-    //�������ģʽ,Ĭ��listenfd LT + connfd LT
+    //触发组合模式
     TRIGMode = 0;
 
-    //listenfd����ģʽ��Ĭ��LT
+    //listenfd触发模式
     LISTENTrigmode = 0;
 
-    //connfd����ģʽ��Ĭ��LT
+    //connfd触发模式
     CONNTrigmode = 0;
 
-    //���Źر����ӣ�Ĭ�ϲ�ʹ��
+    //优雅关闭链接，默认不使用
     OPT_LINGER = 0;
 
-    //���ݿ����ӳ�����,Ĭ��8
+    //数据库连接池数量,默认8
     sql_num = 8;
 
-    //�̳߳��ڵ��߳�����,Ĭ��8
+    //线程池内的线程数量，默认8个线程
     thread_num = 8;
 
-    //�ر���־,Ĭ�ϲ��ر�
+    //关闭日志标志,0表示不关闭
     close_log = 0;
 
-    //����ģ��,Ĭ����proactor
+    //并发模型,默认是proactor模式
     actor_model = 0;
 }
 
-//���������в���
+//解析命令行参数
 void Config::parse_arg(int argc, char* argv[]) {
     int opt;
     const char* str = "p:l:m:o:s:t:c:a:";
