@@ -1,8 +1,3 @@
-/*************************************************************
-*Ñ­»·Êı×éÊµÏÖµÄ×èÈû¶ÓÁĞ£¬m_back = (m_back + 1) % m_max_size;
-*Ïß³Ì°²È«£¬Ã¿¸ö²Ù×÷Ç°¶¼ÒªÏÈ¼Ó»¥³âËø£¬²Ù×÷Íêºó£¬ÔÙ½âËø
-**************************************************************/
-
 #ifndef BLOCK_QUEUE_H
 #define BLOCK_QUEUE_H
 
@@ -48,7 +43,7 @@ public:
 
         m_mutex.unlock();
     }
-    //ÅĞ¶Ï¶ÓÁĞÊÇ·ñÂúÁË
+    //åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦æ»¡äº†
     bool full()
     {
         m_mutex.lock();
@@ -62,7 +57,7 @@ public:
         return false;
     }
 
-    //ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ
+    //åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º
     bool empty()
     {
         m_mutex.lock();
@@ -74,7 +69,7 @@ public:
         m_mutex.unlock();
         return false;
     }
-    //·µ»Ø¶ÓÊ×ÔªËØ
+    //è¿”å›é˜Ÿé¦–å…ƒç´ 
     bool front(T& value)
     {
         m_mutex.lock();
@@ -87,7 +82,7 @@ public:
         m_mutex.unlock();
         return true;
     }
-    //·µ»Ø¶ÓÎ²ÔªËØ
+    //è¿”å›é˜Ÿå°¾å…ƒç´ 
     bool back(T& value)
     {
         m_mutex.lock();
@@ -123,17 +118,17 @@ public:
         return tmp;
     }
 
-    //Íù¶ÓÁĞÌí¼ÓÔªËØ£¬ĞèÒª½«ËùÓĞÊ¹ÓÃ¶ÓÁĞµÄÏß³ÌÏÈ»½ĞÑ
-    //µ±ÓĞÔªËØpush½ø¶ÓÁĞ,Ïàµ±ÓÚÉú²úÕßÉú²úÁËÒ»¸öÔªËØ
-    //Èôµ±Ç°Ã»ÓĞÏß³ÌµÈ´ıÌõ¼ş±äÁ¿,Ôò»½ĞÑÎŞÒâÒå
+    //å¾€é˜Ÿåˆ—æ·»åŠ å…ƒç´ ï¼Œéœ€è¦å°†æ‰€æœ‰ä½¿ç”¨é˜Ÿåˆ—çš„çº¿ç¨‹å…ˆå”¤é†’
+    //å½“æœ‰å…ƒç´ pushè¿›é˜Ÿåˆ—,ç›¸å½“äºç”Ÿäº§è€…ç”Ÿäº§äº†ä¸€ä¸ªå…ƒç´ 
+    //è‹¥å½“å‰æ²¡æœ‰çº¿ç¨‹ç­‰å¾…æ¡ä»¶å˜é‡,åˆ™å”¤é†’æ— æ„ä¹‰
     bool push(const T& item)
     {
 
         m_mutex.lock();
-        if (m_size >= m_max_size)//¶ÓÁĞÒÑÂú
+        if (m_size >= m_max_size)//é˜Ÿåˆ—å·²æ»¡
         {
 
-            m_cond.broadcast();//»½ĞÑËùÓĞÌõ¼ş±äÁ¿
+            m_cond.broadcast();//å”¤é†’æ‰€æœ‰æ¡ä»¶å˜é‡
             m_mutex.unlock();
             return false;
         }
@@ -148,29 +143,29 @@ public:
         return true;
     }
 
-    //popÊ±,Èç¹ûµ±Ç°¶ÓÁĞÃ»ÓĞÔªËØ,½«»áµÈ´ıÌõ¼ş±äÁ¿
+    //popæ—¶,å¦‚æœå½“å‰é˜Ÿåˆ—æ²¡æœ‰å…ƒç´ ,å°†ä¼šç­‰å¾…æ¡ä»¶å˜é‡
     bool pop(T& item)
     {
 
-        m_mutex.lock();//¼ÓËø
-        while (m_size <= 0)//Èç¹û¶ÓÁĞÎª¿ÕµÈ´ı»½ĞÑ
+        m_mutex.lock();//åŠ é”
+        while (m_size <= 0)//å¦‚æœé˜Ÿåˆ—ä¸ºç©ºç­‰å¾…å”¤é†’
         {
-            //Ìõ¼ş±äÁ¿µÈ´ı»½ĞÑ
-            if (!m_cond.wait(m_mutex.get()))//Ö´ĞĞ³ö´í£¬ÖÕÖ¹×ÓÏß³Ì
+            //æ¡ä»¶å˜é‡ç­‰å¾…å”¤é†’
+            if (!m_cond.wait(m_mutex.get()))//æ‰§è¡Œå‡ºé”™ï¼Œç»ˆæ­¢å­çº¿ç¨‹
             {
                 m_mutex.unlock();
                 return false;
             }
         }
 
-        m_front = (m_front + 1) % m_max_size;//»ñÈ¡¶ÔÍ·ÔªËØµÄÏÂ±ê
-        item = m_array[m_front];//½«¶ÓÍ·ÔªËØ¿½±´¸ø´«Èë²ÎÊıitem
-        m_size--;//ÔªËØ¸öÊı¼õÒ»
-        m_mutex.unlock();//½âËø
+        m_front = (m_front + 1) % m_max_size;//è·å–å¯¹å¤´å…ƒç´ çš„ä¸‹æ ‡
+        item = m_array[m_front];//å°†é˜Ÿå¤´å…ƒç´ æ‹·è´ç»™ä¼ å…¥å‚æ•°item
+        m_size--;//å…ƒç´ ä¸ªæ•°å‡ä¸€
+        m_mutex.unlock();//è§£é”
         return true;
     }
 
-    //Ôö¼ÓÁË³¬Ê±´¦Àí
+    //å¢åŠ äº†è¶…æ—¶å¤„ç†
     bool pop(T& item, int ms_timeout)
     {
         struct timespec t = { 0, 0 };
@@ -202,14 +197,14 @@ public:
     }
 
 private:
-    locker m_mutex;//»¥³âËøµÄ·â×°Àà
-    cond m_cond;//Ìõ¼ş±äÁ¿µÄ·â×°Àà
+    locker m_mutex;//äº’æ–¥é”çš„å°è£…ç±»
+    cond m_cond;//æ¡ä»¶å˜é‡çš„å°è£…ç±»
 
     T* m_array;
-    int m_size;//¶ÓÁĞÔªËØ¸öÊı
-    int m_max_size;//¶ÓÁĞÈİÁ¿
-    int m_front;//¶ÓÍ·
-    int m_back;//¶ÓÎ²
+    int m_size;//é˜Ÿåˆ—å…ƒç´ ä¸ªæ•°
+    int m_max_size;//é˜Ÿåˆ—å®¹é‡
+    int m_front;//é˜Ÿå¤´
+    int m_back;//é˜Ÿå°¾
 };
 
 #endif
